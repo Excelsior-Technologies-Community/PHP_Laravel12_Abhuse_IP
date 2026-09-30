@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>IP Abuse Checker</title>
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background: #f5f7fa;
@@ -15,7 +22,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: auto;
         }
 
@@ -23,7 +30,7 @@
             background: #ffffff;
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
             margin-bottom: 25px;
         }
 
@@ -67,12 +74,9 @@
         .result-row {
             display: flex;
             justify-content: space-between;
+            gap: 20px;
             padding: 12px 0;
             border-bottom: 1px solid #eee;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
         }
 
         .label {
@@ -88,8 +92,20 @@
         }
 
         .score {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
+        }
+
+        .score-low {
+            color: #16a34a;
+        }
+
+        .score-medium {
+            color: #d97706;
+        }
+
+        .score-high {
+            color: #dc2626;
         }
 
         .admin-link {
@@ -101,8 +117,19 @@
             color: #2563eb;
             text-decoration: none;
         }
+
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
@@ -113,10 +140,16 @@
         <h1>🛡️ IP Abuse Checker</h1>
 
         <p style="text-align: center;">
+
             Check an IP address against the AbuseIPDB database.
+
         </p>
 
-        <form action="{{ route('check.ip') }}" method="POST">
+
+        <form
+            action="{{ route('check.ip') }}"
+            method="POST"
+        >
 
             @csrf
 
@@ -134,16 +167,36 @@
 
         </form>
 
-        @if ($errors->has('ip'))
+
+        @if($errors->has('ip'))
+
             <div class="error">
+
                 {{ $errors->first('ip') }}
+
             </div>
+
         @endif
 
     </div>
 
 
     @if(isset($data))
+
+        @php
+
+            $score = $data['abuseConfidenceScore'];
+
+            if ($score >= 75) {
+                $scoreClass = 'score-high';
+            } elseif ($score >= 40) {
+                $scoreClass = 'score-medium';
+            } else {
+                $scoreClass = 'score-low';
+            }
+
+        @endphp
+
 
         <div class="card">
 
@@ -152,50 +205,132 @@
             <div class="result">
 
                 <div class="result-row">
-                    <span class="label">IP Address</span>
-                    <span>{{ $data['ipAddress'] }}</span>
-                </div>
 
-                <div class="result-row">
-                    <span class="label">Abuse Confidence Score</span>
-                    <span class="score">
-                        {{ $data['abuseConfidenceScore'] }}%
+                    <span class="label">
+                        IP Address
                     </span>
+
+                    <span>
+                        {{ $data['ipAddress'] }}
+                    </span>
+
                 </div>
 
-                <div class="result-row">
-                    <span class="label">Country</span>
-                    <span>{{ $data['countryName'] }}</span>
-                </div>
 
                 <div class="result-row">
-                    <span class="label">Usage Type</span>
-                    <span>{{ $data['usageType'] }}</span>
+
+                    <span class="label">
+                        Abuse Confidence Score
+                    </span>
+
+                    <span class="score {{ $scoreClass }}">
+
+                        {{ $score }}%
+
+                    </span>
+
                 </div>
 
-                <div class="result-row">
-                    <span class="label">ISP</span>
-                    <span>{{ $data['isp'] }}</span>
-                </div>
 
                 <div class="result-row">
-                    <span class="label">Domain</span>
-                    <span>{{ $data['domain'] }}</span>
+
+                    <span class="label">
+                        Country
+                    </span>
+
+                    <span>
+                        {{ $data['countryName'] }}
+                    </span>
+
                 </div>
 
-                <div class="result-row">
-                    <span class="label">Total Reports</span>
-                    <span>{{ $data['totalReports'] }}</span>
-                </div>
 
                 <div class="result-row">
-                    <span class="label">Last Reported</span>
+
+                    <span class="label">
+                        Usage Type
+                    </span>
+
+                    <span>
+                        {{ $data['usageType'] }}
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span class="label">
+                        ISP
+                    </span>
+
+                    <span>
+                        {{ $data['isp'] }}
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span class="label">
+                        Domain
+                    </span>
+
+                    <span>
+                        {{ $data['domain'] }}
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span class="label">
+                        Total Reports
+                    </span>
+
+                    <span>
+                        {{ $data['totalReports'] }}
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span class="label">
+                        Last Reported
+                    </span>
+
                     <span>
                         {{ $data['lastReportedAt'] ?? 'Never' }}
                     </span>
+
                 </div>
 
             </div>
+
+
+            @if($score >= 75)
+
+                <div class="info">
+                    ⚠️ This IP has a high AbuseIPDB confidence score.
+                </div>
+
+            @elseif($score >= 40)
+
+                <div class="info">
+                    ⚠️ This IP has a moderate AbuseIPDB confidence score.
+                </div>
+
+            @else
+
+                <div class="info">
+                    ✓ This IP currently has a low AbuseIPDB confidence score.
+                </div>
+
+            @endif
 
         </div>
 
@@ -203,12 +338,15 @@
 
 
     <div class="admin-link">
+
         <a href="{{ route('admin.ips.index') }}">
             → Open IP Security Admin Dashboard
         </a>
+
     </div>
 
 </div>
 
 </body>
+
 </html>

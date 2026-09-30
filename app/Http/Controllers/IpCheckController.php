@@ -29,17 +29,6 @@ class IpCheckController extends Controller
 
         $ip = $validated['ip'];
 
-        /*
-        |--------------------------------------------------------------------------
-        | AbuseIPDB API Configuration
-        |--------------------------------------------------------------------------
-        |
-        | Add your API key to .env:
-        |
-        | ABUSEIPDB_API_KEY=your_api_key
-        |
-        */
-
         $apiKey = config('services.abuseipdb.key');
 
         if (!$apiKey) {

@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [IpCheckController::class, 'index']);
+Route::get('/', [
+    IpCheckController::class,
+    'index'
+]);
 
 Route::post('/check-ip', [
     IpCheckController::class,
@@ -42,4 +45,30 @@ Route::prefix('admin')->group(function () {
         'destroy'
     ])->name('admin.ips.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Bulk Actions
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/ips/bulk-unblock', [
+        IpControlController::class,
+        'bulkUnblock'
+    ])->name('admin.ips.bulk-unblock');
+
+    Route::post('/ips/bulk-delete', [
+        IpControlController::class,
+        'bulkDelete'
+    ])->name('admin.ips.bulk-delete');
+
+    /*
+    |--------------------------------------------------------------------------
+    | CSV Export
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/ips/export', [
+        IpControlController::class,
+        'export'
+    ])->name('admin.ips.export');
 });
